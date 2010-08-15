@@ -367,9 +367,10 @@
 
             // Define callback to run after animation completes
             var callback = function animationEnd(event) {
-
-                fromPage[0].removeEventListener('webkitTransitionEnd', callback);
-                fromPage[0].removeEventListener('webkitAnimationEnd', callback);
+                if($.support.WebKitAnimationEvent) {
+                    fromPage[0].removeEventListener('webkitTransitionEnd', callback);
+                    fromPage[0].removeEventListener('webkitAnimationEnd', callback);
+                }
 
                 if (animation) {
                         toPage.removeClass('start in ' + animation.name);
@@ -532,7 +533,10 @@
         function addAnimation(animation) {
             if (typeof(animation.selector) == 'string' && typeof(animation.name) == 'string') {
                 animations.push(animation);
-                $(animation.selector).tap(liveTap);
+                // ignore backSelector since they've already been attached
+                if(animation.selector != jQTSettings.backSelector) {
+                    $(animation.selector).tap(liveTap);
+                }
                 touchSelectors.push(animation.selector);
             }
         }
